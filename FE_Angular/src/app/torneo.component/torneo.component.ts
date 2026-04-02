@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { TorneoService } from './service/torneo.service';
 
 type EntityType = 'anagrafiche' | 'giocatori' | 'squadre';
 
@@ -15,6 +16,8 @@ type EntityConfig = {
 declare global {
   interface Window {
     fetchData?: (entity: EntityType) => Promise<void>;
+    loadPlayers?: () => void;
+    loadAnagrafica?: () => void;
   }
 }
 
@@ -44,12 +47,120 @@ const FIELD_CONFIG: Record<EntityType, EntityConfig> = {
   styleUrl: './torneo.component.css',
 })
 export class TorneoComponent implements OnInit, OnDestroy {
+  constructor(private torneoService: TorneoService) {}
+
   ngOnInit(): void {
     window.fetchData = (entity: EntityType) => this.fetchData(entity);
+    window.loadPlayers = () => this.loadPlayers();
+    window.loadAnagrafica = () => this.loadAnagrafica();
   }
 
   ngOnDestroy(): void {
     delete window.fetchData;
+    delete window.loadPlayers;
+    delete window.loadAnagrafica;
+  }
+
+  loadAnagrafica(): void {
+    const btn = document.querySelector<HTMLButtonElement>('.btn-anagrafica');
+    const resultsEl = document.getElementById('results-anagrafiche');
+    const countEl = document.getElementById('count-anagrafiche');
+
+    if (!btn || !resultsEl || !countEl) return;
+
+    btn.classList.add('loading');
+    const btnText = btn.querySelector('span');
+    if (btnText) btnText.textContent = 'Caricamento...';
+    btn.disabled = true;
+    resultsEl.innerHTML = '';
+
+    this.torneoService.getAllAnagrafica().subscribe({
+      next: (data: unknown) => {
+        const listRaw = Array.isArray(data) ? data : ((data as Record<string, unknown>)['content'] ?? (data as Record<string, unknown>)['data'] ?? [data]);
+        const list: GenericItem[] = Array.isArray(listRaw) ? listRaw : [];
+        const config = FIELD_CONFIG['anagrafiche'];
+
+        countEl.innerHTML = `<span>${list.length}</span> risultati trovati`;
+
+        if (list.length === 0) {
+          resultsEl.innerHTML = ['<div class="empty-state">', '<div class="empty-icon">📭</div>', '<div class="empty-text">Nessun record trovato</div>', '</div>'].join('');
+          return;
+        }
+
+        list.forEach((item, i) => {
+          const row = document.createElement('div');
+          row.className = 'result-row';
+          row.style.animationDelay = `${i * 40}ms`;
+          const fields = config.fields
+            .filter((f) => item[f] !== undefined && item[f] !== null && item[f] !== '')
+            .map((f) => `<div class="field-pill"><strong>${f}:</strong> ${String(item[f])}</div>`)
+            .join('');
+          row.innerHTML = ['<div class="result-row-header">', `<div class="result-name">${config.name(item)}</div>`, `<div class="result-id">#${String(item['id'] ?? i + 1)}</div>`, '</div>', fields ? `<div class="result-fields">${fields}</div>` : ''].join('');
+          resultsEl.appendChild(row);
+        });
+      },
+      error: (err: unknown) => {
+        const message = err instanceof Error ? err.message : 'Errore sconosciuto';
+        countEl.innerHTML = '<span style="color:var(--accent3)">Errore</span>';
+        resultsEl.innerHTML = `<div class="error-state">⚠️ ${message}</div>`;
+      },
+      complete: () => {
+        btn.classList.remove('loading');
+        if (btnText) btnText.textContent = 'Carica Anagrafiche';
+        btn.disabled = false;
+      },
+    });
+  }
+
+  loadPlayers(): void {
+    const btn = document.querySelector<HTMLButtonElement>('.btn-giocatori');
+    const resultsEl = document.getElementById('results-giocatori');
+    const countEl = document.getElementById('count-giocatori');
+
+    if (!btn || !resultsEl || !countEl) return;
+
+    btn.classList.add('loading');
+    const btnText = btn.querySelector('span');
+    if (btnText) btnText.textContent = 'Caricamento...';
+    btn.disabled = true;
+    resultsEl.innerHTML = '';
+
+    this.torneoService.getAllPlayers().subscribe({
+      next: (data: unknown) => {
+        const listRaw = Array.isArray(data) ? data : ((data as Record<string, unknown>)['content'] ?? (data as Record<string, unknown>)['data'] ?? [data]);
+        const list: GenericItem[] = Array.isArray(listRaw) ? listRaw : [];
+        const config = FIELD_CONFIG['giocatori'];
+
+        countEl.innerHTML = `<span>${list.length}</span> risultati trovati`;
+
+        if (list.length === 0) {
+          resultsEl.innerHTML = ['<div class="empty-state">', '<div class="empty-icon">📭</div>', '<div class="empty-text">Nessun record trovato</div>', '</div>'].join('');
+          return;
+        }
+
+        list.forEach((item, i) => {
+          const row = document.createElement('div');
+          row.className = 'result-row';
+          row.style.animationDelay = `${i * 40}ms`;
+          const fields = config.fields
+            .filter((f) => item[f] !== undefined && item[f] !== null && item[f] !== '')
+            .map((f) => `<div class="field-pill"><strong>${f}:</strong> ${String(item[f])}</div>`)
+            .join('');
+          row.innerHTML = ['<div class="result-row-header">', `<div class="result-name">${config.name(item)}</div>`, `<div class="result-id">#${String(item['id'] ?? i + 1)}</div>`, '</div>', fields ? `<div class="result-fields">${fields}</div>` : ''].join('');
+          resultsEl.appendChild(row);
+        });
+      },
+      error: (err: unknown) => {
+        const message = err instanceof Error ? err.message : 'Errore sconosciuto';
+        countEl.innerHTML = '<span style="color:var(--accent3)">Errore</span>';
+        resultsEl.innerHTML = `<div class="error-state">⚠️ ${message}</div>`;
+      },
+      complete: () => {
+        btn.classList.remove('loading');
+        if (btnText) btnText.textContent = 'Carica Giocatori';
+        btn.disabled = false;
+      },
+    });
   }
 
   async fetchData(entity: EntityType): Promise<void> {
