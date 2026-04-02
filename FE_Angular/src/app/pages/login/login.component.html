@@ -1,0 +1,66 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>Accedi</mat-card-title>
+      <mat-card-subtitle>Inserisci le tue credenziali per continuare</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Username</mat-label>
+          <mat-icon matPrefix>person</mat-icon>
+          <input matInput formControlName="username" placeholder="Inserisci username" autocomplete="username" />
+          @if (loginForm.get('username')?.hasError('required') && loginForm.get('username')?.touched) {
+            <mat-error>Username obbligatorio</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <mat-icon matPrefix>lock</mat-icon>
+          <input
+            matInput
+            [type]="hidePassword ? 'password' : 'text'"
+            formControlName="password"
+            placeholder="Inserisci password"
+            autocomplete="current-password"
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="hidePassword = !hidePassword"
+            [attr.aria-label]="'Mostra password'"
+          >
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched) {
+            <mat-error>Password obbligatoria</mat-error>
+          }
+        </mat-form-field>
+
+        @if (loginError) {
+          <p class="error-message">
+            <mat-icon>error_outline</mat-icon>
+            Credenziali non valide. Riprova.
+          </p>
+        }
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="full-width submit-btn"
+          [disabled]="loginForm.invalid || loading"
+        >
+          @if (loading) {
+            Accesso in corso...
+          } @else {
+            Accedi
+          }
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
