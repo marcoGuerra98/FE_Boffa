@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map, tap } from 'rxjs';
 import { LoginRequest } from '../../../models/login-request.model';
 import { LoginResponse } from '../../../models/login-response.model';
+import { AppConstants } from '../../../constants/app-constants';
 
 @Injectable({
     providedIn: 'root',
 })
 export class LoginService {
-    private readonly endpoint = 'http://localhost:8080/api/auth/login';
+    private readonly endpoint = AppConstants.buildApiUrl(AppConstants.API.AUTH.LOGIN);
 
     constructor(private http: HttpClient) {}
 
@@ -19,7 +20,7 @@ export class LoginService {
         return this.http.post<LoginResponse>(this.endpoint, payload).pipe(
             tap((response) => {
                 console.log('LoginService: Received login response', response);
-                localStorage.setItem('token', response.token);
+                localStorage.setItem(AppConstants.STORAGE_KEYS.TOKEN, response.token);
             }),
             map(() => void 0)
         );

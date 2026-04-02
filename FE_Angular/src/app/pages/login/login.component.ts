@@ -53,7 +53,7 @@ export class LoginComponent {
     this.loginService.logIn(this.loginForm.value.username, this.loginForm.value.password).subscribe({
       next: () => {
         this.loading = false;
-        this.router.navigate(['/home']);
+        this.router.navigate(['/torneo']);
       },
       error: () => {
         this.loading = false;

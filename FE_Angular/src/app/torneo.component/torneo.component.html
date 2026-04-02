@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestione Torneo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/torneo.css"/>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark">⚽</div>
+  <div>
+    <h1>TORNEO <span>PIANETTI</span></h1>
+    <p class="page-subtitle">Pannello di gestione dati</p>
+  </div>
+  <div class="status-bar">
+    <div class="status-dot"></div>
+    API attiva · localhost:8080
+  </div>
+</header>
+
+<main>
+
+  <!-- ANAGRAFICHE -->
+  <div class="section-card">
+    <div class="card-header">
+      <div class="card-icon icon-anagrafica">👤</div>
+      <div>
+        <div class="card-title">Anagrafiche</div>
+        <div class="card-subtitle">Dati personali registrati</div>
+      </div>
+      <div class="card-endpoint">GET /anagrafiche</div>
+    </div>
+    <button class="btn-fetch btn-anagrafica" onclick="fetchData('anagrafiche')">
+      <div class="spinner"></div>
+      <span>Carica Anagrafiche</span>
+    </button>
+    <div class="results-area">
+      <div class="results-toolbar">
+        <div class="results-count" id="count-anagrafiche">Nessun dato caricato</div>
+      </div>
+      <div class="results-scroll" id="results-anagrafiche">
+        <div class="empty-state">
+          <div class="empty-icon">👤</div>
+          <div class="empty-text">Premi il tasto per caricare</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GIOCATORI -->
+  <div class="section-card">
+    <div class="card-header">
+      <div class="card-icon icon-giocatori">🏃</div>
+      <div>
+        <div class="card-title">Giocatori</div>
+        <div class="card-subtitle">Rosa dei giocatori</div>
+      </div>
+      <div class="card-endpoint">GET /giocatori</div>
+    </div>
+    <button class="btn-fetch btn-giocatori" onclick="fetchData('giocatori')">
+      <div class="spinner"></div>
+      <span>Carica Giocatori</span>
+    </button>
+    <div class="results-area">
+      <div class="results-toolbar">
+        <div class="results-count" id="count-giocatori">Nessun dato caricato</div>
+      </div>
+      <div class="results-scroll" id="results-giocatori">
+        <div class="empty-state">
+          <div class="empty-icon">🏃</div>
+          <div class="empty-text">Premi il tasto per caricare</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SQUADRE -->
+  <div class="section-card">
+    <div class="card-header">
+      <div class="card-icon icon-squadre">🏆</div>
+      <div>
+        <div class="card-title">Squadre</div>
+        <div class="card-subtitle">Squadre del torneo</div>
+      </div>
+      <div class="card-endpoint">GET /squadre</div>
+    </div>
+    <button class="btn-fetch btn-squadre" onclick="fetchData('squadre')">
+      <div class="spinner"></div>
+      <span>Carica Squadre</span>
+    </button>
+    <div class="results-area">
+      <div class="results-toolbar">
+        <div class="results-count" id="count-squadre">Nessun dato caricato</div>
+      </div>
+      <div class="results-scroll" id="results-squadre">
+        <div class="empty-state">
+          <div class="empty-icon">🏆</div>
+          <div class="empty-text">Premi il tasto per caricare</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <span>Base URL:</span>
+  <span class="base-url-badge">http://localhost:8080</span>
+  <span class="version-label">Torneo Manager v1.0</span>
+</footer>
+<script src="/torneo.js" defer></script>
+</body>
+</html>
