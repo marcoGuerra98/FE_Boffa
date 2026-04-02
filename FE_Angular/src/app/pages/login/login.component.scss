@@ -1,53 +1,376 @@
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: #f5f5f5;
+:host {
+    --surface-border: rgba(223, 205, 160, 0.1);
+    --grid: rgba(196, 169, 112, 0.06);
+    --gold: #b79a62;
+    --gold-soft: #d8c18f;
+    --text: #ece4d7;
+    --muted: rgba(236, 228, 215, 0.34);
+    --line: rgba(236, 228, 215, 0.08);
+    --error: #d77d6d;
+    display: block;
+    min-height: 100vh;
 }
 
-.login-card {
-  width: 100%;
-  max-width: 420px;
-  padding: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
+* {
+    box-sizing: border-box;
 }
 
-mat-card-header {
-  margin-bottom: 16px;
+.login-shell {
+    position: relative;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 88% 16%, rgba(183, 154, 98, 0.1), transparent 24%),
+        radial-gradient(circle at 10% 100%, rgba(52, 60, 94, 0.18), transparent 28%),
+        linear-gradient(180deg, #0d0d14 0%, #08090f 100%);
+    color: var(--text);
 }
 
-mat-card-title {
-  font-size: 1.5rem !important;
-  font-weight: 600 !important;
+.background {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
 }
 
-.full-width {
-  width: 100%;
+.grid-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(circle at center, black 55%, transparent 100%);
 }
 
-mat-form-field {
-  margin-bottom: 8px;
+.orb {
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(90px);
+    opacity: 0.2;
+    animation: drift 16s ease-in-out infinite alternate;
 }
 
-.error-message {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #f44336;
-  font-size: 0.875rem;
-  margin-bottom: 12px;
+.orb-1 {
+    top: -10%;
+    right: -8%;
+    width: 34rem;
+    height: 34rem;
+    background: radial-gradient(circle, rgba(183, 154, 98, 0.28), transparent 70%);
+}
 
-  mat-icon {
-    font-size: 18px;
-    height: 18px;
-    width: 18px;
-  }
+.orb-2 {
+    bottom: -14%;
+    left: -10%;
+    width: 28rem;
+    height: 28rem;
+    background: radial-gradient(circle, rgba(70, 88, 142, 0.22), transparent 70%);
+    animation-duration: 14s;
+    animation-delay: -3s;
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 33rem);
+    padding: 1.5rem;
+    animation: fade-up 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.card {
+    position: relative;
+    overflow: hidden;
+    padding: 3.7rem 3.25rem 2.9rem;
+    background: linear-gradient(180deg, rgba(19, 19, 29, 0.96), rgba(14, 14, 22, 0.98));
+    border: 1px solid var(--surface-border);
+    border-radius: 0.35rem;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.02),
+        0 30px 80px rgba(0, 0, 0, 0.55),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(255, 255, 255, 0.02);
+    pointer-events: none;
+}
+
+.brand {
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.brand-mark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9rem;
+    margin-bottom: 1.75rem;
+}
+
+.brand-line {
+    width: 8.5rem;
+    max-width: 28%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(183, 154, 98, 0.45));
+}
+
+.brand-line:last-child {
+    background: linear-gradient(90deg, rgba(183, 154, 98, 0.45), transparent);
+}
+
+.brand-icon {
+    color: var(--gold-soft);
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.brand-name {
+    margin: 0 0 0.7rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 5vw, 3.7rem);
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: 0.08em;
+}
+
+.brand-sub,
+.footer-note,
+.field-label,
+.submit-btn,
+.error-msg {
+    font-family: 'DM Mono', monospace;
+}
+
+.brand-sub {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.79rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    line-height: 1.7;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2.1rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+
+.field-label {
+    color: var(--muted);
+    font-size: 0.86rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.field-wrap {
+    position: relative;
+}
+
+.field-input {
+    width: 100%;
+    padding: 0.85rem 2.5rem 0.85rem 0;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    background: transparent;
+    color: var(--text);
+    outline: 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    transition: border-color 220ms ease, color 220ms ease;
+}
+
+.field-input::placeholder {
+    color: rgba(236, 228, 215, 0.17);
+}
+
+.field-input:-webkit-autofill,
+.field-input:-webkit-autofill:hover,
+.field-input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--text);
+    -webkit-box-shadow: 0 0 0 1000px transparent inset;
+    transition: background-color 9999s ease-out 0s;
+}
+
+.field-border {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-soft));
+    transition: width 280ms ease;
+}
+
+.field:focus-within .field-label {
+    color: rgba(216, 193, 143, 0.76);
+}
+
+.field:focus-within .field-border {
+    width: 100%;
+}
+
+.field-invalid .field-label,
+.field-invalid .field-input,
+.error-msg {
+    color: var(--error);
+}
+
+.field-invalid .field-input {
+    border-bottom-color: rgba(215, 125, 109, 0.45);
+}
+
+.toggle-pw {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.2rem;
+    border: 0;
+    background: transparent;
+    color: rgba(236, 228, 215, 0.26);
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: color 220ms ease, transform 220ms ease;
+}
+
+.toggle-pw:hover {
+    color: var(--gold-soft);
+    transform: translateY(-50%) scale(1.04);
+}
+
+.eye-icon {
+    width: 1.15rem;
+    height: 1.15rem;
+}
+
+.error-msg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem 0 0;
+    padding: 0.85rem 1rem;
+    border: 1px solid rgba(215, 125, 109, 0.22);
+    background: rgba(215, 125, 109, 0.08);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 .submit-btn {
-  margin-top: 8px;
-  height: 48px;
-  font-size: 1rem;
-  letter-spacing: 0.5px;
+    margin-top: 2.35rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    width: 100%;
+    min-height: 3.65rem;
+    border: 1px solid rgba(183, 154, 98, 0.36);
+    background: linear-gradient(180deg, rgba(20, 20, 29, 0.62), rgba(13, 13, 20, 0.92));
+    color: var(--gold-soft);
+    font-size: 0.95rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+}
+
+.submit-btn:hover:not(:disabled) {
+    border-color: rgba(216, 193, 143, 0.72);
+    box-shadow: 0 0 24px rgba(183, 154, 98, 0.08);
+    transform: translateY(-1px);
+}
+
+.submit-btn:hover:not(:disabled) .btn-arrow {
+    transform: translateX(0.2rem);
+}
+
+.submit-btn:disabled {
+    opacity: 0.72;
+    cursor: wait;
+}
+
+.btn-arrow {
+    font-size: 1rem;
+    transition: transform 220ms ease;
+}
+
+.footer-note {
+    margin: 2.3rem 0 0;
+    color: rgba(236, 228, 215, 0.16);
+    font-size: 0.78rem;
+    letter-spacing: 0.21em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+@keyframes fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes drift {
+    from {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    to {
+        transform: translate3d(2rem, 1.25rem, 0) scale(1.06);
+    }
+}
+
+@media (max-width: 640px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .card {
+        padding: 2.8rem 1.6rem 2.2rem;
+    }
+
+    .brand-name {
+        font-size: 2.8rem;
+    }
+
+    .brand-sub {
+        font-size: 0.72rem;
+        letter-spacing: 0.18em;
+    }
+
+    .brand-line {
+        max-width: 22%;
+    }
+
+    .field-label,
+    .footer-note,
+    .error-msg,
+    .submit-btn {
+        letter-spacing: 0.14em;
+    }
 }
