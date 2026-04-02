@@ -3,25 +3,29 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { LoginService } from './service/login.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
   loginForm: FormGroup;
   loginError = false;
   loading = false;
   hidePassword = true;
+  loginService: LoginService;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    loginService: LoginService
   ) {
+    this.loginService = loginService;
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required]],
@@ -46,7 +50,7 @@ export class LoginComponent {
     this.loginError = false;
     this.loading = true;
 
-    this.authService.login(this.loginForm.value).subscribe({
+    this.loginService.logIn(this.loginForm.value.username, this.loginForm.value.password).subscribe({
       next: () => {
         this.loading = false;
         this.router.navigate(['/home']);
