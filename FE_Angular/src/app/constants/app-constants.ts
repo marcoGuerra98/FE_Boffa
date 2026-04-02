@@ -5,6 +5,13 @@ export class AppConstants {
       LOGIN: '/api/auth/login',
       LEGACY_LOGIN: '/login',
     },
+    PLAYER: {
+      GET_ALL: '/player/getAll'
+    },
+    ANAGRAFICA: {
+      GET_ALL: '/anagrafica/getAll',
+      INSERT: '/anagrafica/insertNewAnag',
+    }
   } as const;
 
   static readonly STORAGE_KEYS = {
